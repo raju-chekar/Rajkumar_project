@@ -44,5 +44,5 @@ workflows:
   build_and_test:
     jobs:
       - frontend-build
-      - Backend-build:
+      - Backend-build
  
