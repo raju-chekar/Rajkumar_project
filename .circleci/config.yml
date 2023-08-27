@@ -127,7 +127,7 @@ jobs:
           keys: [scanfrontend-build]
           # Your job code here
       - run:
-          name: scanfrontend 
+          name: scan-frontend 
           command: |
              # Your code here
              cd frontend
