@@ -1,6 +1,5 @@
 version: 2.1
-
-# 1Define the jobs we want to run for this project
+# Define the jobs we want to run for this project
 jobs:
   build-frontend:
     docker:
@@ -41,8 +40,8 @@ jobs:
   
 # Orchestrate our job run sequence
 workflows:
-  build_and_test:
-    jobs:
+  default:
+      jobs:
       - frontend-build
       - Backend-build
  
