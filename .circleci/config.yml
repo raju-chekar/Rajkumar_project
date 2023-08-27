@@ -264,8 +264,8 @@ jobs:
             
 
 workflows:
-  default:
-    jobs:
+ default:
+   jobs:
       - build-frontend
       - build-backend
       # - test-frontend:
