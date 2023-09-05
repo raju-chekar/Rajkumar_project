@@ -1,29 +1,6 @@
 version: 2.1
 
-commands:
-  install_awscli:
-    description: Install AWS cli
-    steps:
-      - run:
-          name: Install AWS cli
-          command: |
-            curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-            unzip awscliv2.zip
-            sudo ./aws/install
-
-
-
-  install_ansible:
-    description: Install Ansible
-    steps:
-      - run:
-          name: Install Ansible
-          command: |
-            sudo apt update
-            sudo apt install software-properties-common -y
-            sudo add-apt-repository --yes --update ppa:ansible/ansible
-            sudo apt install ansible -y
-# commands1:
+# commands:
 #   destroy-environment:
 #     description: Destroy back-end and front-end cloudformation stacks given a workflow ID.
 #     parameters:
@@ -54,23 +31,7 @@ commands:
 #             #  Add revert code here. You can find this in the Getting Started section.
 #               exit 1
 #             fi
-  destroy-environment:
-    description: Destroy back-end and front-end cloudformation stacks given a workflow ID.
-    parameters:
-      # Add parameter here   
-      workflow_id:
-        default: "${CIRCLE_WORKFLOW_ID:0:7}"
-        type: string
-
-    steps:
-      - run:
-          name: Destroy environments
-          when: on_fail
-          command: |
-            # Your code here
-            aws s3 rm s3://udapeople-<<parameters.workflow_id>> --recursive
-            aws cloudformation delete-stack --stack-name "udapeople-backend-<<parameters.workflow_id>>"
-            aws cloudformation delete-stack --stack-name "udapeople-frontend-<<parameters.workflow_id>>"            
+            
 jobs:
   build-frontend:
     docker:
@@ -259,29 +220,6 @@ jobs:
             - project/.circleci/ansible/inventory.txt
       # Here's where you will add some code to rollback on failure      
 
- configure-infrastructure:
-    docker:
-      # Docker image here that supports Ansible
-      - image: cimg/base:stable
-    steps:
-      - checkout
-      - add_ssh_keys:
-          fingerprints:
-            - "01:75:cd:c4:25:79:0e:c9:a0:aa:c5:1c:a5:c4:d7:d0"
-      - attach_workspace:
-          at: ~/
-    
-      - install_ansible    
-      - install_awscli
-      - run:
-          name: Configure server
-          command: |
-            cd .circleci/ansible
-            cat inventory.txt
-
-            ansible-playbook -i inventory.txt configure-server.yml
-      - destroy-environment
-
 #   configure-infrastructure:
 #     docker:
 #       # Docker image here that supports Ansible
@@ -432,10 +370,10 @@ workflows:
           filters:
             branches:
               only: [master]
-      - configure-infrastructure:
-          requires: [deploy-infrastructure]
-      - run-migrations:
-          requires: [configure-infrastructure]
+      # - configure-infrastructure:
+      #     requires: [deploy-infrastructure]
+      # - run-migrations:
+      #     requires: [configure-infrastructure]
       # - deploy-frontend:
       #     requires: [run-migrations]
       # - deploy-backend:
