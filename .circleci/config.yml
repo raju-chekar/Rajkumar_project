@@ -251,7 +251,7 @@ jobs:
       # Checkout code from git
       # Add ssh keys with fingerprint
       # attach workspace
-            - attach_workspace:
+    - attach_workspace:
           at: ~/
     
     - install_ansible    
