@@ -256,7 +256,7 @@ jobs:
     
     - install_ansible    
     - install_awscli
-    - run:
+      - run:
           name: Configure server
           command: |
             cd .circleci/ansible
