@@ -241,13 +241,13 @@ jobs:
       - attach workspace:
           at: ~/
 
-      # - run:
-      #     name: Install dependencies
-      #     command: |
+      - run:
+          name: Install dependencies
+          command: |
       #       # Your code here
             
-            - install_ansible    
-            - install_awscli
+              apk add --update tar gzip ansible
+              pip install awscli
             
       - run:
           name: Configure server
