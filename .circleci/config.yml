@@ -227,11 +227,11 @@ jobs:
       - destroy-environment
           #workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}    
 
-#   configure-infrastructure:
-#     docker:
-#       # Docker image here that supports Ansible
-#       #- image: cimg/base:stable
-#       - image: python:3.10-alpine3.16
+  configure-infrastructure:
+    docker:
+      # Docker image here that supports Ansible
+      #- image: cimg/base:stable
+      - image: python:3.10-alpine3.16
 #     steps:
 #       - checkout
 #       # Checkout code from git
@@ -401,7 +401,7 @@ workflows:
           filters:
             branches:
               only: [master]
-      # - configure-infrastructure:
+      - configure-infrastructure:
       #     requires: [deploy-infrastructure]
       # - run-migrations:
       #     requires: [configure-infrastructure]
