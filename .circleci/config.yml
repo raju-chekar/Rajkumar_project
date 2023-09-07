@@ -241,10 +241,10 @@ jobs:
       - attach workspace:
           at: ~/
 
-      - run:
-          name: Install dependencies
-          command: |
-            # Your code here
+      # - run:
+      #     name: Install dependencies
+      #     command: |
+      #       # Your code here
             
             - install_ansible    
             - install_awscli
