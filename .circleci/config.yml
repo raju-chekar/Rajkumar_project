@@ -232,8 +232,6 @@ jobs:
       - image: python:3.10-alpine3.16
     steps:
       - checkout
-      # Checkout code from git
-      # Add ssh keys with fingerprint
       - add_ssh_keys:
           fingerprints:
             - "01:75:cd:c4:25:79:0e:c9:a0:aa:c5:1c:a5:c4:d7:d0"
