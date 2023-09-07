@@ -244,10 +244,10 @@ jobs:
       - run:
           name: Install dependencies
           command: |
-      #       # Your code here
+            # Your code here
             
-              apk add --update tar gzip ansible
-              pip install awscli
+            - install_ansible    
+            - install_awscli
             
       - run:
           name: Configure server
