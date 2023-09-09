@@ -332,7 +332,6 @@ jobs:
             - "01:75:cd:c4:25:79:0e:c9:a0:aa:c5:1c:a5:c4:d7:d0"
       - attach_workspace:
           at: ~/
-
       - install_nodejs
       - install_awscli
       - install_ansible
@@ -353,8 +352,8 @@ jobs:
           name: Deploy frontend objects
           command: |
             cd frontend
-            sudo npm install -g npm@latest
-            rm -rf node_modules
+            # sudo npm install -g npm@latest
+            # rm -rf node_modules
             npm install
             npm run build
             aws s3 cp dist s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7} --recursive
@@ -372,7 +371,7 @@ jobs:
       - checkout
       - add_ssh_keys:
           fingerprints: 
-            - "a4:9d:96:eb:ac:e1:aa:05:fb:97:f2:1d:e8:2c:0e:9c"
+            - "01:75:cd:c4:25:79:0e:c9:a0:aa:c5:1c:a5:c4:d7:d0"
       - attach_workspace:
           at: ~/
       - install_nodejs
