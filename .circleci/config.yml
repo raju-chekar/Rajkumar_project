@@ -407,8 +407,6 @@ jobs:
           name: Backend smoke test
           command: |
             BACKEND_PUBLIC_IP=$(aws ec2 describe-instances \
-            # export BACKEND_IP=$(tail ~/project/.circleci/ansible/inventory.txt)
-            #export BACKEND_IP=$(aws ec2 describe-instances \
             --query 'Reservations[*].Instances[*].PublicIpAddress' \
             --filters Name=tag:aws:cloudformation:stack-name,Values=udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7} \
             --output text)
@@ -431,8 +429,8 @@ jobs:
               else
                 Return 1
               fi
-      - destroy-environment:
-      - revert-migrations:
+      # - destroy-environment:
+      # - revert-migrations:
 
       # - destroy-environment
       # - revert-migrations
