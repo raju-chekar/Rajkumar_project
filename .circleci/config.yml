@@ -510,10 +510,8 @@ jobs:
   
   cleanup:
     docker:
-    # Docker image here
       - image: cimg/base:stable
     steps:
-    # Checkout code from git
       - checkout
       - install_awscli
       - run:
@@ -523,13 +521,12 @@ jobs:
                 --query "StackSummaries[*].StackName" \
                 --stack-status-filter CREATE_COMPLETE --no-paginate --output text)) 
             echo Stack names: "${STACKS[@]}"
-            export OldWorkflowID=$(curl --insecure https://kvdb.io/N1fybErqdSD264W13w349U/old_workflow_id)
+            export OldWorkflowID=$(curl --insecure https://kvdb.io/33GxcCpH7rHocPuWALvF32/old_workflow_id)
             echo Old Workflow ID: $OldWorkflowID
-      # - run:
-      #     name: Remove old stacks and files
-      #     command: |
-      #     # your code here
-            export OldWorkflowID=$(curl --insecure https://kvdb.io/N1fybErqdSD264W13w349U/old_workflow_id)
+      - run:
+          name: Remove old stacks and files
+          command: |
+            export OldWorkflowID=$(curl --insecure https://kvdb.io/33GxcCpH7rHocPuWALvF32/old_workflow_id)
             echo Old Workflow ID: $OldWorkflowID 
 
             if [[ "${STACKS[@]}" =~ "${OldWorkflowID}" ]]
