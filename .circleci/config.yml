@@ -507,7 +507,36 @@ jobs:
             echo Current Workflow ID: ${CIRCLE_WORKFLOW_ID:0:7}      
       # - destroy-environment
       # - revert-migrations      
+  cleanup:
+    docker:
+    # Docker image here
+      - image: cimg/base:stable
+    steps:
+    # Checkout code from git
+      - checkout
+      - install_awscli
+      - run:
+          name: Get old stack workflow id
+          command: |
+            export STACKS=($(aws cloudformation list-stacks \
+                --query "StackSummaries[*].StackName" \
+                --stack-status-filter CREATE_COMPLETE --no-paginate --output text)) 
+            echo Stack names: "${STACKS[@]}"
+            export OldWorkflowID=$(curl --insecure https://kvdb.io/N1fybErqdSD264W13w349U/old_workflow_id)
+            echo Old Workflow ID: $OldWorkflowID
+      - run:
+          name: Remove old stacks and files
+          command: |
+          # your code here
+            export OldWorkflowID=$(curl --insecure https://kvdb.io/N1fybErqdSD264W13w349U/old_workflow_id)
+            echo Old Workflow ID: $OldWorkflowID 
 
+            if [[ "${STACKS[@]}" =~ "${OldWorkflowID}" ]]
+            then
+              aws s3 rm "s3://udapeople-${OldWorkflowID}" --recursive
+              aws cloudformation delete-stack --stack-name "udapeople-backend-${OldWorkflowID}"
+              aws cloudformation delete-stack --stack-name "udapeople-frontend-${OldWorkflowID}"
+            fi
 #   smoke-test:
 #     docker:
 #       # Lightweight Docker image 
