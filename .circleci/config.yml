@@ -480,8 +480,8 @@ jobs:
       # - destroy-environment:
       # - revert-migrations:
 
-      - destroy-environment
-      - revert-migrations
+      # - destroy-environment
+      # - revert-migrations
 
 #   smoke-test:
 #     docker:
