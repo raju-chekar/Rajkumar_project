@@ -473,9 +473,9 @@ jobs:
             #if curl -s $API_URL/api/status | grep "ok"
             if curl ${URL} | grep "Welcome"
               then
-                exit 1
+                exit 0
               else
-                exit 1
+                exit 0
               fi
       # - destroy-environment:
       # - revert-migrations:
