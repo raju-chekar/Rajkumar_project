@@ -524,6 +524,7 @@ jobs:
             echo Stack names: "${STACKS[@]}"
             export OldWorkflowID=$(curl --insecure https://kvdb.io/N1fybErqdSD264W13w349U/old_workflow_id)
             echo Old Workflow ID: $OldWorkflowID
+      
       - run:
           name: Remove old stacks and files
           command: |
@@ -625,5 +626,5 @@ workflows:
           requires: [deploy-backend, deploy-frontend]
       - cloudfront-update:
           requires: [smoke-test]
-      # - cleanup:
-      #     requires: [cloudfront-update]
+      - cleanup:
+          requires: [cloudfront-update]
