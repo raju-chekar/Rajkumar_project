@@ -498,7 +498,7 @@ jobs:
       - checkout
       - install_awscli
       - run:
-          name: Get old stack workflow id
+          name: Get old stack workflow id and clean 
           command: |
             export OldWorkflowID=$(aws cloudformation list-exports --query "Exports[?Name==\`WorkflowID\`].Value" --region us-east-1 --no-paginate --output text)
             echo OldWorkflowID: "${OldWorkflowID}"
