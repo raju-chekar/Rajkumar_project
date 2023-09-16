@@ -49,29 +49,48 @@ commands:
             aws cloudformation delete-stack --stack-name "udapeople-frontend-<<parameters.workflow_id>>"
 
 
-  revert-migrations:
+  # revert-migrations:
+  #   description: Revert the last migration if successfully run in the current workflow.
+  #   parameters:
+  #     # Add parameter here 
+  #     workflow_id:
+  #       default: "${CIRCLE_WORKFLOW_ID:0:7}"
+  #       type: string
+    
+  #   steps:
+  #     - run:
+  #         name: Revert migrations
+  #         when: on_fail
+  #         command: |
+  #           # Curl command here to see if there was a successful migration associated with the workflow id, store result in SUCCESS variable
+  #           # SUCCESS=$(curl --insecure https://kvdb.io/N1fybErqdSD264W13w349U/migration_<<parameters.workflow_id>>)
+  #           SUCCESS=$(curl --insecure https://kvdb.io/N1fybErqdSD264W13w349U/migration_${CIRCLE_WORKFLOW_ID:0:7})
+  #           echo "${CIRCLE_WORKFLOW_ID:0:7}"
+  #           if (( $SUCCESS==0 )); 
+  #           then
+  #             echo "Reverting migration back"
+  #             cd ~/project/backend
+  #             npm install
+  #             npm run migrations:revert
+  #           fi
+    revert-migrations:
     description: Revert the last migration if successfully run in the current workflow.
     parameters:
-      # Add parameter here 
-      workflow_id:
-        default: "${CIRCLE_WORKFLOW_ID:0:7}"
-        type: string
-    
+      # Add parameter here     
     steps:
       - run:
           name: Revert migrations
           when: on_fail
+          # Add when this will run
           command: |
             # Curl command here to see if there was a successful migration associated with the workflow id, store result in SUCCESS variable
-            # SUCCESS=$(curl --insecure https://kvdb.io/N1fybErqdSD264W13w349U/migration_<<parameters.workflow_id>>)
-            SUCCESS=$(curl --insecure https://kvdb.io/N1fybErqdSD264W13w349U/migration_${CIRCLE_WORKFLOW_ID:0:7})
-            echo "${CIRCLE_WORKFLOW_ID:0:7}"
-            if (( $SUCCESS==0 )); 
+            SUCCESS=$(curl --insecure  https://kvdb.io/N1fybErqdSD264W13w349U/migration_${CIRCLE_WORKFLOW_ID:0:7})
+            if(( $SUCCESS==0 )); 
             then
-              echo "Reverting migration back"
+              echo "Reverting Back mig"
               cd ~/project/backend
               npm install
-              npm run migrations:revert
+              npm run migration:revert
             fi
 
   
@@ -306,44 +325,90 @@ jobs:
 #       # Here's where you will add some code to rollback on failure      
      #- destroy-environment
 
-  run-migrations:
-    docker:
-      # Docker image here that supports NodeJS
-      - image: circleci/node:13.8.0
-    steps:
-    # Checkout code from git
-      - checkout
-      - run:
-          name: Install dependencies
-          command: |
-            # your code here
-            sudo apt install -y tar gzip curl
-            curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-            unzip -qq awscliv2.zip
-            sudo ./aws/install
-      - run:
-          name: Run migrations
-          command: |
-            cd backend
-            npm install
-            npm run migrations > migrations_dump.txt
+  # run-migrations:
+  #   docker:
+  #     # Docker image here that supports NodeJS
+  #     - image: circleci/node:13.8.0
+  #   steps:
+  #   # Checkout code from git
+  #     - checkout
+  #     - run:
+  #         name: Install dependencies
+  #         command: |
+  #           # your code here
+  #           sudo apt install -y tar gzip curl
+  #           curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+  #           unzip -qq awscliv2.zip
+  #           sudo ./aws/install
+  #     - run:
+  #         name: Run migrations
+  #         command: |
+  #           cd backend
+  #           npm install
+  #           npm run migrations > migrations_dump.txt
            
-      - run:
-          name: Send migration results to memstash
-          command: |
-            echo "Querying buc value https://kvdb.io/N1fybErqdSD264W13w349U/migration_${CIRCLE_WORKFLOW_ID:0:7}"
-            if grep -q "has been executed successfully." ~/project/backend/migrations_dump.txt
-            then
-            echo 'Migrated successfully'
-            curl --insecure https://kvdb.io/N1fybErqdSD264W13w349U/migration_${CIRCLE_WORKFLOW_ID:0:7}  -d '1'
-            else:
-            echo 'Migration failed'
-            curl https://kvdb.io/N1fybErqdSD264W13w349U/migration_${CIRCLE_WORKFLOW_ID:0:7}  -d '0'
-            fi
+  #     - run:
+  #         name: Send migration results to memstash
+  #         command: |
+  #           echo "Querying buc value https://kvdb.io/N1fybErqdSD264W13w349U/migration_${CIRCLE_WORKFLOW_ID:0:7}"
+  #           if grep -q "has been executed successfully." ~/project/backend/migrations_dump.txt
+  #           then
+  #           echo 'Migrated successfully'
+  #           curl --insecure https://kvdb.io/N1fybErqdSD264W13w349U/migration_${CIRCLE_WORKFLOW_ID:0:7}  -d '1'
+  #           else:
+  #           echo 'Migration failed'
+  #           curl https://kvdb.io/N1fybErqdSD264W13w349U/migration_${CIRCLE_WORKFLOW_ID:0:7}  -d '0'
+  #           fi
       #- destroy-environment 
       #- revert-migrations
      # Here's where you will add some code to rollback on failure      
 
+
+
+ run-migrations:
+    docker:
+      # Docker image here that supports NodeJS
+      - image: cimg/node:13.8.0
+    steps:
+      # Checkout code from git
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: Run migrations
+          command: |
+            cd backend
+            echo ENVIRONMENT=production > ".env"
+            echo TYPEORM_CONNECTION=postgres >> ".env"
+            echo TYPEORM_ENTITIES=./src/modules/domain/*/*/*.entity.ts >> ".env"
+            echo TYPEORM_MIGRATIONS=./src/migrations/*.ts >> ".env"
+            echo TYPEORM_MIGRATIONS_DIR=./src/migrations >> ".env"
+            echo TYPEORM_HOST=$TYPEORM_HOST >> ".env"
+            echo TYPEORM_PORT=$TYPEORM_PORT >> ".env"
+            echo TYPEORM_USERNAME=$TYPEORM_USERNAME >> ".env"
+            echo TYPEORM_PASSWORD=$TYPEORM_PASSWORD >> ".env"
+            echo TYPEORM_DATABASE=$TYPEORM_DATABASE >> ".env"
+            echo "npm install"
+            npm install
+            echo $?
+            echo "npm migrations"
+            npm run migrations > migrations_dump.txt
+            echo $?
+            echo "----------------------------------"
+            cat migrations_dump.txt 
+            echo "----------------------------------"
+      - run:
+          name: Send migration results to memstash
+          command: |
+            if grep -q "has been executed successfully." ~/project/backend/migrations_dump.txt
+            then
+              echo 'Migrated successfully'
+              curl https://kvdb.io/N1fybErqdSD264W13w349U/migration_${CIRCLE_WORKFLOW_ID:0:7}  -d '1'
+            else:
+              echo 'Migration failed'
+              curl https://kvdb.io/N1fybErqdSD264W13w349U/migration_${CIRCLE_WORKFLOW_ID:0:7}  -d '0'
+            fi
+  
   deploy-frontend:
    # Docker 
     docker:
@@ -463,12 +528,12 @@ jobs:
             #if curl -s $API_URL/api/status | grep "ok"
             if curl ${URL} | grep "Welcome"
               then
-                exit 0
+                exit 1
               else
                 exit 1
               fi
-      # - destroy-environment
-      # - revert-migrations
+      - destroy-environment
+      - revert-migrations
 
    
 
@@ -552,10 +617,10 @@ workflows:
           requires: [run-migrations]
       - smoke-test:
           requires: [deploy-backend, deploy-frontend]
-      - cloudfront-update:
-          requires: [smoke-test]
-      - cleanup:
-          requires: [cloudfront-update]
+      # - cloudfront-update:
+      #     requires: [smoke-test]
+      # - cleanup:
+      #     requires: [cloudfront-update]
       # - cleanup
 
       
