@@ -65,6 +65,7 @@ commands:
             # Curl command here to see if there was a successful migration associated with the workflow id, store result in SUCCESS variable
             # SUCCESS=$(curl --insecure https://kvdb.io/N1fybErqdSD264W13w349U/migration_<<parameters.workflow_id>>)
             SUCCESS=$(curl --insecure https://kvdb.io/N1fybErqdSD264W13w349U/migration_${CIRCLE_WORKFLOW_ID:0:7})
+            echo "${CIRCLE_WORKFLOW_ID:0:7}"
             if (( $SUCCESS==0 )); 
             then
               echo "Reverting migration back"
@@ -334,6 +335,9 @@ jobs:
             then
              echo 'Migrated successfully'
              curl --insecure https://kvdb.io/N1fybErqdSD264W13w349U/migration_${CIRCLE_WORKFLOW_ID:0:7}  -d '1'
+             else:
+             echo 'Migration failed'
+             curl https://kvdb.io/N1fybErqdSD264W13w349U/migration_${CIRCLE_WORKFLOW_ID:0:7}  -d '0'
             fi
       #- destroy-environment 
       #- revert-migrations
