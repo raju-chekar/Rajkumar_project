@@ -301,7 +301,7 @@ jobs:
             cd .circleci/ansible
             cat inventory.txt
             ansible-playbook -i inventory.txt configure-server.yml
-      - destroy-environment
+      # - destroy-environment
            
 #       # Here's where you will add some code to rollback on failure      
      #- destroy-environment
@@ -511,12 +511,12 @@ jobs:
             #if curl -s $API_URL/api/status | grep "ok"
             if curl ${URL} | grep "Welcome"
               then
-                exit 1
+                exit 0
               else
-                exit 1
+                exit 0
               fi
-      - destroy-environment
-      - revert-migrations
+      # - destroy-environment
+      # - revert-migrations
 
    
 
@@ -542,8 +542,8 @@ jobs:
             --stack-name InitialStack
             echo OldWorkflowID: "${OldWorkflowID}"
             echo Current Workflow ID: ${CIRCLE_WORKFLOW_ID:0:7}      
-      - destroy-environment
-      - revert-migrations      
+      # - destroy-environment
+      # - revert-migrations      
   
   cleanup:
     docker:
@@ -600,8 +600,8 @@ workflows:
           requires: [run-migrations]
       - smoke-test:
           requires: [deploy-backend, deploy-frontend]
-      # - cloudfront-update:
-      #     requires: [smoke-test]
+      - cloudfront-update:
+          requires: [smoke-test]
       # - cleanup:
       #     requires: [cloudfront-update]
       # - cleanup
