@@ -460,7 +460,7 @@ jobs:
               else
                 exit 1
               fi
-      - destroy-environment:
+      - destroy-environment
       # - revert-migrations:
 
       # - destroy-environment
@@ -488,7 +488,7 @@ jobs:
             --stack-name InitialStack
             echo OldWorkflowID: "${OldWorkflowID}"
             echo Current Workflow ID: ${CIRCLE_WORKFLOW_ID:0:7}      
-      # - destroy-environment
+      - destroy-environment
       # - revert-migrations      
   
   cleanup:
