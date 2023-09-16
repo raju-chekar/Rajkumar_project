@@ -301,7 +301,7 @@ jobs:
             cd .circleci/ansible
             cat inventory.txt
             ansible-playbook -i inventory.txt configure-server.yml
-      # - destroy-environment
+      - destroy-environment
            
 #       # Here's where you will add some code to rollback on failure      
      #- destroy-environment
@@ -465,13 +465,12 @@ jobs:
               then
                 exit 0
               else
-                exit 0
+                exit 1
               fi
       # - destroy-environment
       # - revert-migrations
 
-      # - destroy-environment
-      # - revert-migrations
+   
 
   cloudfront-update:
     docker:
@@ -495,8 +494,8 @@ jobs:
             --stack-name InitialStack
             echo OldWorkflowID: "${OldWorkflowID}"
             echo Current Workflow ID: ${CIRCLE_WORKFLOW_ID:0:7}      
-      # - destroy-environment
-      # - revert-migrations      
+      - destroy-environment
+      - revert-migrations      
   
   cleanup:
     docker:
