@@ -365,7 +365,7 @@ jobs:
 
 
 
- run-migrations:
+  run-migrations:
     docker:
       # Docker image here that supports NodeJS
       - image: cimg/node:13.8.0
