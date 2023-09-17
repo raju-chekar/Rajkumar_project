@@ -399,6 +399,7 @@ jobs:
    # checkout
     steps:
       - checkout
+
       - add_ssh_keys:
           fingerprints: 
             - "01:75:cd:c4:25:79:0e:c9:a0:aa:c5:1c:a5:c4:d7:d0"
@@ -500,7 +501,7 @@ jobs:
               then
                 exit 0
               else
-                exit 0
+                exit 1
               fi
       - run:
           name: Frontend smoke test.
@@ -512,7 +513,7 @@ jobs:
               then
                 exit 0
               else
-                exit 0
+                exit 1
               fi
       # - destroy-environment
       # - revert-migrations
@@ -543,7 +544,8 @@ jobs:
               --tags project=udapeople
             echo OldWorkflowID: "${OldWorkflowID}"
             echo Current Workflow ID: ${CIRCLE_WORKFLOW_ID:0:7}
-  
+      # Here's where you will add some code to rollback on failure  
+      # - destroy-environment   
 
   # cloudfront-update:
   #   docker:
